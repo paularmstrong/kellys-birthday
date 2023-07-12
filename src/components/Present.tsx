@@ -1,7 +1,8 @@
-import { createSignal } from 'solid-js';
+import { createSignal, onMount } from 'solid-js';
 import clsx from 'clsx';
 import { gifts } from '../data/gifts';
 import { Gift } from './Gift';
+import confetti from 'canvas-confetti';
 
 interface Props {
 	color: 'orange' | 'emerald' | 'fuchsia' | 'pink' | 'sky';
@@ -12,57 +13,71 @@ const [opened, setOpened] = createSignal(-1);
 
 export function Present(props: Props) {
 	const [giftId, setGiftId] = createSignal<number>(-1);
+	const [party, setParty] = createSignal<typeof confetti>(null);
+	let canvasRef;
+
+	onMount(() => {
+		const party = confetti.create(canvasRef, { resize: true, useWorker: true });
+		setParty(() => party);
+	});
 
 	return (
 		<div class="relative">
-			<div
-				class="perspective-[400px] w-[200px] h-[200px]"
-				onClick={() => {
-					const thisId = opened() + 1;
-					setGiftId(thisId);
-					setOpened(thisId);
-				}}
-			>
+			{giftId() > -1 ? <Gift {...gifts[giftId()]} /> : null}
+			<canvas class="absolute w-[400px] h-[400px] z-10 pointer-events-none" ref={canvasRef} />
+			<div class="p-16">
 				<div
-					class={clsx(
-						'w-[200px] h-[200px] relative transform-style-3d',
-						giftId() > -1
-							? 'animate-open fill-forward'
-							: {
-									'animate-rotate-3d-xfast': props.speed === 'xfast',
-									'animate-rotate-3d-fast': props.speed === 'fast',
-									'animate-rotate-3d-medium': props.speed === 'medium',
-									'animate-rotate-3d-slow': props.speed === 'slow',
-									'animate-rotate-3d-xslow': props.speed === 'xslow',
-									'animate-rotate-3d-xxslow': props.speed === 'xxslow',
-							  },
-						{
-							'text-orange-400': props.color === 'orange',
-							'text-emerald-400': props.color === 'emerald',
-							'text-fuchsia-400': props.color === 'fuchsia',
-							'text-pink-400': props.color === 'pink',
-							'text-sky-400': props.color === 'sky',
+					class="perspective-[400px] w-[200px] h-[200px]"
+					onClick={() => {
+						if (giftId() !== -1) {
+							return;
 						}
-					)}
+						const thisId = opened() + 1;
+						setGiftId(thisId);
+						setOpened(thisId);
+						party()({ particleCount: 400 });
+					}}
 				>
-					<Side side="front" />
-					<Side side="back" />
-					<Side side="left" />
-					<Side side="right" />
-					<Side side="bottom" />
-
-					{giftId() === -1 ? (
-						<>
-							<Lid side="front" />
-							<Lid side="back" />
-							<Lid side="left" />
-							<Lid side="right" />
-							<Lid side="top" />
-						</>
-					) : null}
+					<div
+						class={clsx(
+							'w-[200px] h-[200px] relative transform-style-3d',
+							giftId() > -1
+								? 'animate-open fill-forward'
+								: {
+										'animate-rotate-3d-xfast': props.speed === 'xfast',
+										'animate-rotate-3d-fast': props.speed === 'fast',
+										'animate-rotate-3d-medium': props.speed === 'medium',
+										'animate-rotate-3d-slow': props.speed === 'slow',
+										'animate-rotate-3d-xslow': props.speed === 'xslow',
+										'animate-rotate-3d-xxslow': props.speed === 'xxslow',
+								  },
+							{
+								'text-orange-400': props.color === 'orange',
+								'text-emerald-400': props.color === 'emerald',
+								'text-fuchsia-400': props.color === 'fuchsia',
+								'text-pink-400': props.color === 'pink',
+								'text-sky-400': props.color === 'sky',
+							}
+						)}
+					>
+						<Side side="front" />
+						<Side side="back" />
+						<Side side="left" />
+						<Side side="right" />
+						<Side side="bottom" />
+						{giftId() === -1 ? (
+							<>
+								<Lid side="front" />
+								<Lid side="back" />
+								<Lid side="left" />
+								<Lid side="right" />
+								<Lid side="top" />
+							</>
+						) : null}
+						co
+					</div>
 				</div>
 			</div>
-			{giftId() > -1 ? <Gift {...gifts[giftId()]} /> : null}
 		</div>
 	);
 }

@@ -8,10 +8,9 @@ import { Gifts } from '../components/Gifts';
 		<meta name="viewport" content="width=device-width" />
 		<title>It’s your flippin’ birthday!</title>
 	</head>
-	<body class="bg-slate-900">
-		<h1>It’s your flippin’ birthday!</h1>
-		<div class="flex gap-12 items-center content-center w-full h-[400px]">
-			<Gifts client:load />
-		</div>
+	<body class="bg-slate-900 flex flex-col gap-12 min-h-screen py-12">
+		<h1 class="text-center text-white font-bold text-6xl">Happy birthday, Kelly!</h1>
+		<Gifts client:load />
+		<p class="text-center text-white font-bold text-sm">Made with ❤️ by your husband.</p>
 	</body>
 </html>

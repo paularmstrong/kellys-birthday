@@ -1,5 +1,6 @@
 import type { Config } from 'tailwindcss';
 import threeD from 'tailwindcss-3d';
+import animate from 'tailwindcss-animate';
 
 export default {
 	content: ['./src/**/*.{astro,html,js,jsx,md,mdx,ts,tsx}'],
@@ -33,6 +34,7 @@ export default {
 	},
 	plugins: [
 		threeD,
+		animate,
 		// @ts-ignore
 		function ({ addUtilities, matchUtilities, theme }) {
 			addUtilities({
